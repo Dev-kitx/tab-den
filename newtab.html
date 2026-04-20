@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>TabDen</title>
+  <link rel="stylesheet" href="newtab.css"/>
+</head>
+<body>
+
+  <!-- ── Header ─────────────────────────────────────────────── -->
+  <header class="header">
+    <div class="header-brand">
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
+        <rect width="24" height="24" rx="6" fill="url(#hg)"/>
+        <path d="M4 22 V13 Q4 5 12 5 Q20 5 20 13 V22 Z" fill="rgba(255,255,255,0.92)"/>
+        <path d="M8 22 V14.5 Q8 10 12 10 Q16 10 16 14.5 V22 Z" fill="url(#hg)"/>
+        <defs>
+          <linearGradient id="hg" x1="0" y1="0" x2="24" y2="24" gradientUnits="userSpaceOnUse">
+            <stop stop-color="#818cf8"/>
+            <stop offset="1" stop-color="#4f52d3"/>
+          </linearGradient>
+        </defs>
+      </svg>
+      <span class="brand-name">TabDen</span>
+    </div>
+
+    <div class="header-center">
+      <div class="clock" id="clock">12:00</div>
+      <div class="greeting" id="greeting">Good afternoon</div>
+    </div>
+
+    <div class="header-right">
+      <button class="btn-theme" id="btn-theme" title="Toggle theme" aria-label="Toggle theme"></button>
+      <button class="btn-theme" id="btn-io" title="Export / Import" aria-label="Export / Import"></button>
+      <div class="search-wrap">
+        <svg class="sh-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+        <input type="text" id="search" class="search-input" placeholder="Search tabs…" autocomplete="off"/>
+        <button class="search-clear hidden" id="search-clear">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+        </button>
+      </div>
+      <button class="btn btn-ghost" id="btn-open-tabs">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-4 0v2M8 7V5a2 2 0 0 0-4 0v2"/><line x1="12" y1="12" x2="12" y2="16"/><line x1="10" y1="14" x2="14" y2="14"/></svg>
+        Save Open Tabs
+      </button>
+      <button class="btn btn-primary" id="btn-new-col">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+        New Collection
+      </button>
+    </div>
+  </header>
+
+  <!-- ── Collections Board ───────────────────────────────────── -->
+  <div class="board" id="board"></div>
+
+  <!-- ── Welcome (empty state) ──────────────────────────────── -->
+  <div class="welcome hidden" id="welcome">
+    <div class="welcome-card">
+      <svg width="80" height="80" viewBox="0 0 24 24" fill="none">
+        <rect width="24" height="24" rx="6" fill="url(#wg)" opacity="0.15"/>
+        <path d="M4 22 V13 Q4 5 12 5 Q20 5 20 13 V22 Z" fill="url(#wg)" opacity="0.4"/>
+        <path d="M8 22 V14.5 Q8 10 12 10 Q16 10 16 14.5 V22 Z" fill="url(#wg)" opacity="0.6"/>
+        <defs>
+          <linearGradient id="wg" x1="0" y1="0" x2="24" y2="24" gradientUnits="userSpaceOnUse">
+            <stop stop-color="#818cf8"/>
+            <stop offset="1" stop-color="#6366f1"/>
+          </linearGradient>
+        </defs>
+      </svg>
+      <h2>Your den is empty</h2>
+      <p>Create a collection to start organizing your tabs. Save entire sessions, research links, or anything you want to come back to.</p>
+      <button class="btn btn-primary btn-lg" id="welcome-btn">Create First Collection</button>
+    </div>
+  </div>
+
+  <!-- ── Search Results ─────────────────────────────────────── -->
+  <div class="search-results hidden" id="search-results"></div>
+
+  <!-- ── Toast ──────────────────────────────────────────────── -->
+  <div class="toast hidden" id="toast"></div>
+
+  <!-- ── Context Menu ───────────────────────────────────────── -->
+  <div class="ctx-menu hidden" id="ctx-menu"></div>
+
+  <!-- ── Modal: Collection ──────────────────────────────────── -->
+  <div class="overlay hidden" id="col-overlay">
+    <div class="modal">
+      <div class="modal-title" id="col-modal-title">New Collection</div>
+      <input type="text" class="modal-input" id="col-name" placeholder="e.g. Work, Research, Reading…" maxlength="40"/>
+      <div class="color-grid" id="col-colors"></div>
+      <div class="modal-actions">
+        <button class="btn btn-ghost" id="col-cancel">Cancel</button>
+        <button class="btn btn-primary" id="col-confirm">Create</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Modal: Add Tab ─────────────────────────────────────── -->
+  <div class="overlay hidden" id="add-overlay">
+    <div class="modal modal-lg">
+      <div class="modal-title">Add to <span id="add-col-name" style="font-weight:800"></span></div>
+      <div class="src-tabs">
+        <button class="src-tab active" data-src="open">Open Tabs</button>
+        <button class="src-tab" data-src="url">Custom URL</button>
+      </div>
+      <div class="open-tabs-wrap" id="add-open-list"></div>
+      <div class="url-form hidden" id="add-url-form">
+        <input type="text" class="modal-input" id="add-url" placeholder="https://…"/>
+        <input type="text" class="modal-input mt8" id="add-title" placeholder="Title (optional)"/>
+      </div>
+      <div class="modal-actions">
+        <button class="btn btn-ghost" id="add-cancel">Cancel</button>
+        <button class="btn btn-primary" id="add-confirm">Add Tab</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Modal: Save Open Tabs ──────────────────────────────── -->
+  <div class="overlay hidden" id="save-overlay">
+    <div class="modal modal-lg">
+      <div class="modal-title">Save Open Tabs</div>
+      <div class="save-dest">
+        <span class="save-dest-label">Save to:</span>
+        <select class="modal-select" id="save-dest-select"></select>
+        <button class="btn btn-sm btn-ghost" id="save-new-col">+ New</button>
+      </div>
+      <div class="select-all-row">
+        <label class="select-all-label">
+          <input type="checkbox" id="save-select-all" />
+          Select all
+        </label>
+      </div>
+      <div class="open-tabs-wrap" id="save-tabs-list"></div>
+      <div class="modal-actions">
+        <span class="tab-sel-count" id="save-sel-count">0 selected</span>
+        <button class="btn btn-ghost" id="save-cancel">Cancel</button>
+        <button class="btn btn-primary" id="save-confirm">Save Selected</button>
+      </div>
+    </div>
+  </div>
+
+  <input type="file" id="import-file" accept=".json" class="hidden">
+  <script src="newtab.js"></script>
+</body>
+</html>

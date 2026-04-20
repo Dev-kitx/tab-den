@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<title>TabDen — Generate Icons</title>
+<style>
+  body { font-family: system-ui, sans-serif; background: #0e0e18; color: #e8e8f2;
+         display:flex; flex-direction:column; align-items:center; padding: 40px; gap: 24px; }
+  h2 { font-size: 20px; }
+  p  { color: #8888a0; font-size: 13px; max-width: 360px; text-align: center; line-height: 1.6; }
+  .canvases { display: flex; gap: 20px; align-items: flex-end; flex-wrap: wrap; justify-content: center; }
+  .item { display: flex; flex-direction: column; align-items: center; gap: 10px; }
+  .label { font-size: 12px; color: #6b6b85; }
+  button {
+    padding: 8px 18px; background: #6366f1; color: white; border: none;
+    border-radius: 8px; cursor: pointer; font-size: 13px; font-weight: 600;
+  }
+  button:hover { background: #818cf8; }
+  .download-all {
+    padding: 12px 28px; font-size: 14px;
+    background: linear-gradient(135deg, #818cf8, #6366f1);
+    box-shadow: 0 4px 14px rgba(99,102,241,0.4);
+    border-radius: 10px;
+  }
+</style>
+</head>
+<body>
+<h2>TabDen Icon Generator</h2>
+<p>Click <strong>Download All</strong> to save icon16.png, icon48.png, and icon128.png into this folder.</p>
+
+<div class="canvases" id="canvases"></div>
+<button class="download-all" onclick="downloadAll()">Download All Icons</button>
+
+<script>
+const sizes = [16, 48, 128];
+const canvases = {};
+
+function drawIcon(canvas) {
+  const s = canvas.width;
+  const ctx = canvas.getContext('2d');
+  const r = s * 0.22;
+
+  // Background gradient
+  const grad = ctx.createLinearGradient(0, 0, s, s);
+  grad.addColorStop(0, '#6366f1');
+  grad.addColorStop(1, '#4338ca');
+  ctx.fillStyle = grad;
+  roundRect(ctx, 0, 0, s, s, r);
+  ctx.fill();
+
+  // Subtle inner glow
+  const glow = ctx.createRadialGradient(s*0.3, s*0.25, 0, s*0.5, s*0.5, s*0.65);
+  glow.addColorStop(0, 'rgba(255,255,255,0.14)');
+  glow.addColorStop(1, 'rgba(255,255,255,0)');
+  ctx.fillStyle = glow;
+  roundRect(ctx, 0, 0, s, s, r);
+  ctx.fill();
+
+  // Den arch — outer white shape (the arch walls)
+  ctx.fillStyle = 'rgba(255,255,255,0.93)';
+  ctx.beginPath();
+  const ox = s * 0.17, oy = s * 0.21, ow = s * 0.66;
+  ctx.moveTo(ox, s);
+  ctx.lineTo(ox, s * 0.54);
+  ctx.bezierCurveTo(ox, oy, ox + ow * 0.5, oy - s * 0.02, ox + ow * 0.5, oy - s * 0.02);
+  ctx.bezierCurveTo(ox + ow * 0.5, oy - s * 0.02, ox + ow, oy, ox + ow, s * 0.54);
+  ctx.lineTo(ox + ow, s);
+  ctx.closePath();
+  ctx.fill();
+
+  // Den interior — gradient refill (the dark inside of the den)
+  const innerGrad = ctx.createLinearGradient(0, 0, s, s);
+  innerGrad.addColorStop(0, '#5254d0');
+  innerGrad.addColorStop(1, '#3730a3');
+  ctx.fillStyle = innerGrad;
+  ctx.beginPath();
+  const ix = s * 0.31, iy = s * 0.38, iw = s * 0.38;
+  ctx.moveTo(ix, s);
+  ctx.lineTo(ix, s * 0.6);
+  ctx.bezierCurveTo(ix, iy, ix + iw * 0.5, iy - s * 0.02, ix + iw * 0.5, iy - s * 0.02);
+  ctx.bezierCurveTo(ix + iw * 0.5, iy - s * 0.02, ix + iw, iy, ix + iw, s * 0.6);
+  ctx.lineTo(ix + iw, s);
+  ctx.closePath();
+  ctx.fill();
+}
+
+function roundRect(ctx, x, y, w, h, r) {
+  ctx.beginPath();
+  ctx.moveTo(x + r, y);
+  ctx.lineTo(x + w - r, y);
+  ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+  ctx.lineTo(x + w, y + h - r);
+  ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+  ctx.lineTo(x + r, y + h);
+  ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+  ctx.lineTo(x, y + r);
+  ctx.quadraticCurveTo(x, y, x + r, y);
+  ctx.closePath();
+}
+
+const container = document.getElementById('canvases');
+
+for (const size of sizes) {
+  const wrap = document.createElement('div');
+  wrap.className = 'item';
+
+  const canvas = document.createElement('canvas');
+  canvas.width = size;
+  canvas.height = size;
+  canvas.style.cssText = `width:${Math.max(size, 64)}px;height:${Math.max(size, 64)}px;image-rendering:pixelated;border-radius:${size*0.18}px`;
+  drawIcon(canvas);
+  canvases[size] = canvas;
+
+  const label = document.createElement('div');
+  label.className = 'label';
+  label.textContent = `${size}×${size}`;
+
+  const btn = document.createElement('button');
+  btn.textContent = 'Download';
+  btn.onclick = () => download(size);
+
+  wrap.appendChild(canvas);
+  wrap.appendChild(label);
+  wrap.appendChild(btn);
+  container.appendChild(wrap);
+}
+
+function download(size) {
+  const a = document.createElement('a');
+  a.download = `icon${size}.png`;
+  a.href = canvases[size].toDataURL('image/png');
+  a.click();
+}
+
+function downloadAll() {
+  for (const size of sizes) {
+    setTimeout(() => download(size), sizes.indexOf(size) * 200);
+  }
+}
+</script>
+</body>
+</html>

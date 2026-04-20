@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <title>TabDen</title>
+  <link rel="stylesheet" href="popup.css"/>
+</head>
+<body>
+  <div class="header">
+    <div class="logo">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+        <rect width="24" height="24" rx="6" fill="url(#pg)"/>
+        <path d="M4 22 V13 Q4 5 12 5 Q20 5 20 13 V22 Z" fill="rgba(255,255,255,0.92)"/>
+        <path d="M8 22 V14.5 Q8 10 12 10 Q16 10 16 14.5 V22 Z" fill="url(#pg)"/>
+        <defs><linearGradient id="pg" x1="0" y1="0" x2="24" y2="24" gradientUnits="userSpaceOnUse">
+          <stop stop-color="#818cf8"/><stop offset="1" stop-color="#4f52d3"/>
+        </linearGradient></defs>
+      </svg>
+      <span>TabDen</span>
+    </div>
+  </div>
+
+  <div class="body">
+    <div class="current-tab" id="current-tab">
+      <div class="ct-fav" id="ct-fav"></div>
+      <div class="ct-info">
+        <div class="ct-title" id="ct-title">Loading…</div>
+        <div class="ct-url" id="ct-url"></div>
+      </div>
+    </div>
+
+    <div class="save-to">
+      <span class="save-label">Save to</span>
+      <select id="col-select" class="col-select"></select>
+    </div>
+
+    <button class="save-btn" id="save-btn">Save Tab</button>
+
+    <a class="open-link" id="open-link" href="#" target="_blank">Open TabDen →</a>
+  </div>
+
+  <div class="toast hidden" id="toast"></div>
+  <script src="popup.js"></script>
+</body>
+</html>

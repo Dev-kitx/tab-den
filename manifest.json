@@ -1,0 +1,27 @@
+{
+  "manifest_version": 3,
+  "name": "TabDen",
+  "version": "2.0.0",
+  "description": "Beautiful new tab manager — save, organize and restore your tabs",
+  "permissions": ["tabs", "storage", "activeTab", "contextMenus"],
+  "chrome_url_overrides": {
+    "newtab": "newtab.html"
+  },
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    },
+    "default_title": "TabDen — Quick Save"
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  }
+}
